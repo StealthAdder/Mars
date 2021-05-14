@@ -25,8 +25,8 @@ const server = require('http').createServer(app);
 const PORT = process.env['PORT'];
 
 app.get('/', (req, res) => {
-  console.log(Date.now() + 'Ping Received');
-  res.status(200);
+  console.log(Date.now() + ' Ping Received');
+  res.sendStatus(200);
 });
 
 server.listen(PORT, () => {

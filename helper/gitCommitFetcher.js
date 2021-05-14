@@ -91,7 +91,7 @@ const gitCommitFetcher = async (repo, branch, Channel) => {
             `🌐 GitHub API`,
             `**Commit URL**: [${sha.substring(0, 8)}](${html_url})`
           )
-          .setFooter(`Timestamp: ${timestamp}`);
+          .setFooter(`Timestamp: ${timestamp.toLocaleString(undefined, {timeZone: 'Asia/Kolkata'})}`);
         let seed = await Channel.send(embed);
       });
     } else {
@@ -135,7 +135,7 @@ const gitCommitFetcher = async (repo, branch, Channel) => {
                   `🌐 GitHub API`,
                   `**Commit URL**: [${sha.substring(0, 8)}](${html_url})`
                 )
-                .setFooter(`Timestamp: ${timestamp}`);
+                .setFooter(`Timestamp: ${timestamp.toLocaleString(undefined, {timeZone: 'Asia/Kolkata'})}`);
               let seed = await Channel.send(embed);
             }
           );
