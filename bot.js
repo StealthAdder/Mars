@@ -56,9 +56,6 @@ console.log(Commands.length + ' files loaded in [ commands ] folder');
 
 client.on('ready', () => {
   // client.user.setActivity('Valorant Crate opening', { type: 'Listening' });
-  const Channel = client.channels.cache.get('831359264504545321');
-  if (!Channel) return console.log('Invalid channel.');
-
   // Channel.send('Bot startup.');
   console.log(`${client.user.tag} has Powered Up!!!`);
 });
