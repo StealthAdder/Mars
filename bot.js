@@ -84,25 +84,25 @@ client.on('ready', () => {
   setInterval(async () => {
     // update with api
     await branchWatcher(repo);
-    setTimeout(async () => {
-      await neatBranch();
-    }, 1500);
   }, 19000);
 
   setInterval(() => {
-    fs.access(`./assets/watching.json`, (err) => {
+    fs.access(`./assets/watching.json`, async (err) => {
       if (err) {
         console.log(err);
       } else {
+        await neatBranch();
         // found
-        fs.readFile(`./assets/watching.json`, async (err, content) => {
-          let data = JSON.parse(content);
-          let branches = data.branch;
-          // console.log(branches);
-          for (branch of branches) {
-            await gitCommitFetcher(repo, branch, Channel);
-          }
-        });
+        setTimeout(() => {
+          fs.readFile(`./assets/watching.json`, async (err, content) => {
+            let data = JSON.parse(content);
+            let branches = data.branch;
+            // console.log(branches);
+            for (branch of branches) {
+              await gitCommitFetcher(repo, branch, Channel);
+            }
+          });
+        }, 2000);
       }
     });
   }, 100000);
