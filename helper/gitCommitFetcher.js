@@ -116,7 +116,7 @@ const gitCommitFetcher = async (repo, branch, Channel) => {
             async (err) => {
               if (err) return console.log(err);
               console.log(`commitFetcher: ${branch} file updated`);
-              console.log(author.avatar_url);
+              // console.log(author.avatar_url);
               let splitUrl = author.avatar_url.split('?');
               embed
                 .setTitle(`📍 Committed to #\`${branch}\``)

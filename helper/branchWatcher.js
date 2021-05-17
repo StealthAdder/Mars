@@ -1,5 +1,5 @@
 const branchWatcher = async (repo) => {
-  console.log(`watcher: syncing branches from api`);
+  // console.log(`watcher: syncing branches from api`);
   const fs = require('fs');
   const { Octokit } = require('@octokit/core');
   const auth_token = process.env['auth_token'];
@@ -33,7 +33,7 @@ const branchWatcher = async (repo) => {
         if (err) return console.log(err);
       });
     } else {
-      console.log(`watcher: all in sync`);
+      // console.log(`watcher: all in sync`);
       fs.writeFile(`./assets/watching.json`, data, (err) => {
         if (err) return console.log(err);
       });

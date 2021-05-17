@@ -21,6 +21,9 @@ const repository = process.env['repository'];
 
 // init Server
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const server = require('http').createServer(app);
 const PORT = process.env['PORT'];
 
@@ -29,12 +32,12 @@ app.get('/', (req, res) => {
   res.sendStatus(200);
 });
 
-server.listen(PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`Your app is listening on port ${server.address().port}`);
 });
 
 app.listen(3000, () => {
-  console.log(`Express Server Running on port 3000`);
+  console.log(`Express Server Running..`);
 });
 
 // git Events

@@ -1,6 +1,6 @@
 const neatBranch = async () => {
   const fs = require('fs');
-  console.log(`neatBranch: Checking for Untracked/outdated Branches files`);
+  // console.log(`neatBranch: Checking for Untracked/outdated Branches files`);
   fs.readdir(`./assets/branches`, (err, files) => {
     if (err) return console.log(err);
     //
@@ -34,9 +34,9 @@ const neatBranch = async () => {
             if (err) return console.log(err);
             console.log(`neatBranch: ${delbr}.json removed`);
           });
-        console.log(`neatBranch: found .gitkeep but it was saved by master.`);
+        // console.log(`neatBranch: found .gitkeep but it was saved by master.`);
       }
-      console.log(`neatBranch: all clean`);
+      // console.log(`neatBranch: all clean`);
     });
   });
 };
