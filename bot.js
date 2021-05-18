@@ -14,16 +14,23 @@ const PREFIX = prefix.PREFIX;
 const path = require('path');
 const express = require('express');
 
+const connectDB = require('./api/config/connectDB');
+const fetchBranch = require('./api/svc/fetchBranch');
+
 const mars_token = process.env['mars_token'];
 const notify_channel = process.env['notify_channel'];
 const repository = process.env['repository'];
 // console.log(mars_token);
+try {
+  connectDB();
+} catch (err) {
+  console.log(err);
+}
 
-// init Server
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+// init Server
 const server = require('http').createServer(app);
 const PORT = process.env['PORT'];
 
@@ -39,11 +46,6 @@ server.listen(process.env.PORT, () => {
 app.listen(3000, () => {
   console.log(`Express Server Running..`);
 });
-
-// git Events
-const gitCommitFetcher = require('./helper/gitCommitFetcher');
-const branchWatcher = require('./helper/branchWatcher');
-const neatBranch = require('./helper/neatBranch');
 
 client.commands = new Collection();
 const Commands = fs
@@ -90,14 +92,9 @@ client.on('message', (message) => {
 client.on('ready', () => {
   const Channel = client.channels.cache.get(notify_channel);
 
-  setInterval(async () => {
-    // update with api
-    let branchList = await branchWatcher(repository);
-    // console.log(branchList);
-    for (const branch of branchList) {
-      await gitCommitFetcher(repository, branch, Channel);
-    }
-    await neatBranch();
+  // every 20 seconds check the api
+  setInterval(() => {
+    fetchBranch(client, repository, Channel);
   }, 20000);
 });
 
