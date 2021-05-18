@@ -1,4 +1,4 @@
-const branchWatcher = async (repo) => {
+const branchWatcher = async (repository) => {
   // console.log(`watcher: syncing branches from api`);
   const fs = require('fs');
   const { Octokit } = require('@octokit/core');
@@ -11,24 +11,24 @@ const branchWatcher = async (repo) => {
     'GET /repos/{owner}/{repo}/branches',
     {
       owner: 'StealthAdder',
-      repo: repo,
+      repo: repository,
     }
   );
 
   const res = commitInfo.data;
   let branchList = [];
   for (branch of res) {
-    branchList.push(branch.name);
+    await branchList.push(branch.name);
   }
   // console.log(branchList);
   let obj = {
     branch: branchList,
   };
-  let data = JSON.stringify(obj);
+  let data = await JSON.stringify(obj);
   fs.access(`./assets/watching.json`, (err) => {
     if (err) {
       // no found
-      console.log(`watcher: new file created`);
+      // console.log(`watcher: new file created`);
       fs.writeFile(`./assets/watching.json`, data, (err) => {
         if (err) return console.log(err);
       });
@@ -39,6 +39,7 @@ const branchWatcher = async (repo) => {
       });
     }
   });
+  return branchList;
 };
 
 module.exports = branchWatcher;

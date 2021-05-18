@@ -1,5 +1,5 @@
 const gitCommitFetcher = async (repo, branch, Channel) => {
-  console.log(`commitFetcher: ${repo}/${branch}`);
+  // console.log(`commitFetcher: ${repo}/${branch}`);
   const { MessageEmbed } = require('discord.js');
   const { Octokit } = require('@octokit/core');
   const fs = require('fs');
@@ -19,7 +19,7 @@ const gitCommitFetcher = async (repo, branch, Channel) => {
     }
   );
   const res = await commitInfo.data;
-  const { sha, parents, commit, stats, files, author, html_url } = res;
+  const { sha, parents, commit, stats, files, author, html_url } = await res;
 
   // console.log(sha);
   // console.log(parents);
@@ -46,10 +46,14 @@ const gitCommitFetcher = async (repo, branch, Channel) => {
 
   fs.access(`./assets/branches/${branch}.json`, (err) => {
     if (err) {
+      let date = new Date().toUTCString();
+      console.log(date);
+      let logTime = `${date}: ${branch} added\n`;
+      fs.appendFile(`./assets/log.txt`, logTime, 'utf-8', (err) => {
+        if (err) return console.log(err);
+      });
       // First Time Commits storage
-      console.log(
-        `commitFetcher: branch file doesnt exist so created ${branch}.json`
-      );
+      // console.log(`commitFetcher: created ${branch}.json`);
       let mainobj = {};
       /* format
         {
@@ -71,7 +75,7 @@ const gitCommitFetcher = async (repo, branch, Channel) => {
       // console.log(data);
       fs.writeFile(`./assets/branches/${branch}.json`, data, async (err) => {
         if (err) return console.log(err);
-        console.log(`commitFetcher: ${branch} file written`);
+        // console.log(`commitFetcher: ${branch} file written`);
 
         let splitUrl = author.avatar_url.split('?');
         embed
@@ -91,18 +95,28 @@ const gitCommitFetcher = async (repo, branch, Channel) => {
             `🌐 GitHub API`,
             `**Commit URL**: [${sha.substring(0, 8)}](${html_url})`
           )
-          .setFooter(`Timestamp: ${timestamp.toLocaleString(undefined, {timeZone: 'Asia/Kolkata'})}`);
+          .setFooter(
+            `Timestamp: ${timestamp.toLocaleString(undefined, {
+              timeZone: 'Asia/Kolkata',
+            })}`
+          );
         let seed = await Channel.send(embed);
       });
     } else {
-      console.log(`commitFetcher: ${branch} file exists`);
-      fs.readFile(`./assets/branches/${branch}.json`, (err, content) => {
+      // console.log(`commitFetcher: ${branch} file exists`);
+      fs.readFile(`./assets/branches/${branch}.json`, async (err, content) => {
         if (err) return console.log(err);
         let data = JSON.parse(content);
         // console.log(data);
         // console.log(parentSha);
         // console.log(data.previousCommit.sha);
         if (parentSha === data.recentCommit.sha || null) {
+          let date = new Date().toUTCString();
+          // console.log(date);
+          let logTime = `${date}: embed sent for ${branch}\n`;
+          fs.appendFile(`./assets/log.txt`, logTime, 'utf-8', (err) => {
+            if (err) return console.log(err);
+          });
           // new commit avaiable
           // change recentCommit.sha to sha
           // change previousCommit.sha to parentSha
@@ -115,7 +129,7 @@ const gitCommitFetcher = async (repo, branch, Channel) => {
             update,
             async (err) => {
               if (err) return console.log(err);
-              console.log(`commitFetcher: ${branch} file updated`);
+              // console.log(`commitFetcher: ${branch} file updated`);
               // console.log(author.avatar_url);
               let splitUrl = author.avatar_url.split('?');
               embed
@@ -135,12 +149,16 @@ const gitCommitFetcher = async (repo, branch, Channel) => {
                   `🌐 GitHub API`,
                   `**Commit URL**: [${sha.substring(0, 8)}](${html_url})`
                 )
-                .setFooter(`Timestamp: ${timestamp.toLocaleString(undefined, {timeZone: 'Asia/Kolkata'})}`);
+                .setFooter(
+                  `Timestamp: ${timestamp.toLocaleString(undefined, {
+                    timeZone: 'Asia/Kolkata',
+                  })}`
+                );
               let seed = await Channel.send(embed);
             }
           );
         } else {
-          console.log(`commitFetcher: No change in ${branch} detected`);
+          // console.log(`commitFetcher: No change in ${branch} detected`);
         }
       });
     }

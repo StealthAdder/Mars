@@ -58,8 +58,11 @@ for (const file of Commands) {
 console.log(Commands.length + ' files loaded in [ commands ] folder');
 
 client.on('ready', () => {
-  // client.user.setActivity('Valorant Crate opening', { type: 'Listening' });
-  // Channel.send('Bot startup.');
+  client.user.setStatus('dnd');
+  client.user.setActivity('Commits & Patch Updates', {
+    type: 'WATCHING',
+  });
+  // Channel.send('Bot Started.');
   console.log(`${client.user.tag} has Powered Up!!!`);
 });
 
@@ -76,39 +79,26 @@ client.on('message', (message) => {
     }
   };
 
-  CommandHandler();
+  if (
+    message.content.startsWith(PREFIX) ||
+    message.content.startsWith(PREFIX.toUpperCase())
+  ) {
+    CommandHandler();
+  }
 });
 
 client.on('ready', () => {
   const Channel = client.channels.cache.get(notify_channel);
 
-  let repo = repository;
-
   setInterval(async () => {
     // update with api
-    await branchWatcher(repo);
-  }, 19000);
-
-  setInterval(() => {
-    fs.access(`./assets/watching.json`, async (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        await neatBranch();
-        // found
-        setTimeout(() => {
-          fs.readFile(`./assets/watching.json`, async (err, content) => {
-            let data = JSON.parse(content);
-            let branches = data.branch;
-            // console.log(branches);
-            for (branch of branches) {
-              await gitCommitFetcher(repo, branch, Channel);
-            }
-          });
-        }, 2000);
-      }
-    });
-  }, 100000);
+    let branchList = await branchWatcher(repository);
+    // console.log(branchList);
+    for (const branch of branchList) {
+      await gitCommitFetcher(repository, branch, Channel);
+    }
+    await neatBranch();
+  }, 20000);
 });
 
 client.login(mars_token);

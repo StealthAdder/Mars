@@ -1,5 +1,5 @@
 module.exports.run = async (client, message, args) => {
-  console.log(args);
+  // console.log(args);
   if (message.author.bot) return;
   const { MessageEmbed } = require('discord.js');
   const embed = new MessageEmbed();
