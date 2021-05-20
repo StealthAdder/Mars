@@ -2,6 +2,7 @@ const fetchBranch = async (client, repository, Channel) => {
   const fs = require('fs');
   const branch = require('../models/branch');
   const messenger = require('./messenger');
+  const moment = require('moment');
   const { Octokit } = require('@octokit/core');
   const auth_token = process.env['auth_token'];
   const octokit = new Octokit({
@@ -38,7 +39,7 @@ const fetchBranch = async (client, repository, Channel) => {
           console.log(`${result[0].branchName}: outdated`);
           let _id = result[0]._id;
           let updates = {
-            $set: { currentSha: br.commit.sha },
+            $set: { currentSha: br.commit.sha, updated: moment().format() },
           };
           let options = { new: true };
           const updateSha = await branch.findByIdAndUpdate(

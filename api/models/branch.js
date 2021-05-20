@@ -1,6 +1,6 @@
 // branch schema
 const mongoose = require('mongoose');
-
+const moment = require('moment');
 const branchSchema = new mongoose.Schema({
   branchName: {
     type: String,
@@ -9,8 +9,13 @@ const branchSchema = new mongoose.Schema({
   currentSha: {
     type: String,
   },
-  previousSha: {
+  origin: {
     type: String,
+    default: moment().format(),
+  },
+  updated: {
+    type: String,
+    default: null,
   },
 });
 
